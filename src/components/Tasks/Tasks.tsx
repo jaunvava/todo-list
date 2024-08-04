@@ -1,5 +1,5 @@
 // importações
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import styles from "./styletask.module.scss";
 
 // array
@@ -23,12 +23,26 @@ export const Tasks: React.FC = () => {
     }
 
     // add tasks
-    setTasks([
-      ...tasks, //pegando as tarefas ja existentes e colocando no novo valor de estado da tarefas
+    const newTaks = [
+      ...tasks,
+      //pegando as tarefas ja existentes e colocando no novo valor de estado da tarefas
       { id: new Date().getTime(), title: taskTitle, done: false },
-    ]);
+    ];
+
+    setTasks(newTaks);
+    // armazenando as info na mémoria do navegador
+    localStorage.setItem("tasks", JSON.stringify(newTaks));
+
     setTaskTitle("");
   }
+
+  useEffect(() => {
+    const tasksOnLocalStore = localStorage.getItem("tasks");
+    if (tasksOnLocalStore) {
+      setTasks(JSON.parse(tasksOnLocalStore));
+      return;
+    }
+  }, []);
 
   return (
     <section className={styles.container}>
